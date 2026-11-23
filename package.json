@@ -1,7 +1,7 @@
 {
   "name": "net-sleuth",
   "productName": "net-sleuth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Shows how your Windows PC is connected, fixes common network problems and checks your network security.",
   "license": "MIT",
