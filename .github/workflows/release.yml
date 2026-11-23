@@ -1,0 +1,65 @@
+# Builds the installer and the portable .exe and publishes them as a GitHub release.
+# Triggered by pushing a version tag, e.g.:
+#   npm version patch        (bumps package.json and creates the tag v1.0.1)
+#   git push --follow-tags
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch: # manual run from the Actions tab: builds and keeps the files as an artifact, no release
+
+permissions:
+  contents: write # needed to create the release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check that the tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match package.json version $version"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Tests
+        run: npm test
+
+      - name: Build installer and portable
+        run: |
+          npx electron-vite build
+          npx electron-builder --win --publish never
+
+      - name: Keep the files on the workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-builds
+          path: release/*.exe
+          if-no-files-found: error
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: net-sleuth ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            release/*-installer.exe
+            release/*-portable.exe

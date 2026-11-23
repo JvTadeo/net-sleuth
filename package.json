@@ -1,0 +1,55 @@
+{
+  "name": "net-sleuth",
+  "productName": "net-sleuth",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shows how your Windows PC is connected, fixes common network problems and checks your network security.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JvTadeo/net-sleuth.git"
+  },
+  "homepage": "https://github.com/JvTadeo/net-sleuth",
+  "main": "./out/main/index.js",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "rolldown tests/network.test.ts --platform node --format esm -o out/tests/network.test.mjs --log-level silent && rolldown tests/security.test.ts --platform node --format esm -o out/tests/security.test.mjs --log-level silent && rolldown tests/vault.test.ts --platform node --format esm -o out/tests/vault.test.mjs --log-level silent && rolldown tests/devices.test.ts --platform node --format esm -o out/tests/devices.test.mjs --log-level silent && rolldown tests/discovery.test.ts --platform node --format esm -o out/tests/discovery.test.mjs --log-level silent && rolldown tests/router.test.ts --platform node --format esm -o out/tests/router.test.mjs --log-level silent && node out/tests/network.test.mjs && node out/tests/security.test.mjs && node out/tests/vault.test.mjs && node out/tests/devices.test.mjs && node out/tests/discovery.test.mjs && node out/tests/router.test.mjs",
+    "dist:win": "electron-vite build && electron-builder --win",
+    "dist:setup": "electron-vite build && electron-builder --win nsis",
+    "dist:portable": "electron-vite build && electron-builder --win portable"
+  },
+  "devDependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@radix-ui/react-dialog": "^1.3.1",
+    "@radix-ui/react-select": "^2.4.1",
+    "@radix-ui/react-slot": "^1.5.0",
+    "@remixicon/react": "^4.9.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^6.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.1",
+    "tailwindcss": "^4.3.5",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5.9.3",
+    "uqr": "0.1.3",
+    "vite": "^8.3.8",
+    "zustand": "^5.1.0"
+  },
+  "author": "net-sleuth"
+}

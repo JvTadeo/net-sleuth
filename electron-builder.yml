@@ -1,0 +1,43 @@
+# Windows build: an installer and a portable .exe, both from `npm run dist:win`.
+appId: com.netsleuth.app
+productName: net-sleuth
+copyright: Copyright © 2026
+directories:
+  output: release
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+  # Offline manufacturer table for the Aparelhos page (scripts/build-oui.mjs).
+  - resources/oui.txt.gz
+asar: true
+
+win:
+  icon: resources/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+
+# Installer: per-user by default (no admin rights needed), Brazilian Portuguese, with a real uninstaller.
+nsis:
+  artifactName: net-sleuth-${version}-installer.${ext}
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: net-sleuth
+  uninstallDisplayName: net-sleuth
+  installerIcon: resources/icon.ico
+  uninstallerIcon: resources/icon.ico
+  installerLanguages: [pt_BR]
+  language: "1046"
+  deleteAppDataOnUninstall: false
+
+# Portable: a single .exe that runs without installing. Settings and saved data live next to it
+# (see src/main/portable.ts).
+portable:
+  artifactName: net-sleuth-${version}-portable.${ext}
