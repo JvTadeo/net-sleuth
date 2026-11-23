@@ -41,8 +41,11 @@ function createWindow(): void {
     frame: false, // custom title bar (TitleBar.tsx)
     backgroundColor: dark ? BG_DARK : BG_LIGHT,
     title: 'net-sleuth',
-    // Packaged builds take the icon from the .exe; in development, point at the source PNG.
-    ...(app.isPackaged ? {} : { icon: join(app.getAppPath(), 'resources', 'icon.png') }),
+    // Packaged builds take the icon from net-sleuth.exe. In development the process is electron.exe, so the window
+    // carries the icon itself (the .ico on Windows, with every size the taskbar asks for).
+    ...(app.isPackaged
+      ? {}
+      : { icon: join(app.getAppPath(), 'resources', process.platform === 'win32' ? 'icon.ico' : 'icon.png') }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
@@ -95,7 +98,9 @@ app.whenReady().then(async () => {
     app.quit()
     return
   }
-  if (process.platform === 'win32') app.setAppUserModelId('com.netsleuth.app')
+  // The app id ties the taskbar button and notifications to the installed app's shortcut. In development there is no
+  // shortcut, and with this id Windows 11 shows electron.exe's icon on the taskbar instead of the window's own.
+  if (process.platform === 'win32' && app.isPackaged) app.setAppUserModelId('com.netsleuth.app')
 
   const settings = loadSettings()
   nativeTheme.themeSource = settings.theme

@@ -24,6 +24,9 @@ const STATUS: Record<CheckStatus, { label: string; variant: 'ok' | 'warn' | 'sec
   na: { label: 'Sem uso aqui', variant: 'secondary', icon: RiIndeterminateCircleLine, color: 'text-muted-foreground/70' }
 }
 
+/** Buttons in the narrow side panel may wrap to two lines instead of overflowing it. */
+const WRAP = 'h-auto min-h-8 max-w-full whitespace-normal py-1.5 text-left'
+
 const ports = (list: number[]): string => `${list.length === 1 ? 'porta' : 'portas'} ${list.slice(0, 4).join(', ')}${list.length > 4 ? '…' : ''}`
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -95,28 +98,34 @@ export default function Security() {
   const actionButton = (a: CheckAction): React.ReactNode => {
     if (a.kind === 'page') {
       return (
-        <Button size="sm" onClick={() => setPage(a.page)}>
+        <Button size="sm" className={WRAP} onClick={() => setPage(a.page)}>
           {a.label}
         </Button>
       )
     }
     if (a.kind === 'settings') {
       return (
-        <Button size="sm" onClick={() => void window.api.app.openWindowsSettings(a.target)}>
+        <Button size="sm" className={WRAP} onClick={() => void window.api.app.openWindowsSettings(a.target)}>
           {a.label}
         </Button>
       )
     }
     if (a.admin && !isAdmin) {
+      // Short button, the reason above it: a long label would not fit the side panel.
       return (
-        <Button size="sm" variant="outline" onClick={() => void relaunch()}>
-          <RiShieldUserLine aria-hidden />
-          Reabrir como admin para {a.label.charAt(0).toLowerCase() + a.label.slice(1)}
-        </Button>
+        <div className="flex flex-col items-start gap-1.5">
+          <span className="text-xs text-muted-foreground">
+            {a.label} pede o modo administrador.
+          </span>
+          <Button size="sm" variant="outline" className={WRAP} onClick={() => void relaunch()}>
+            <RiShieldUserLine aria-hidden />
+            Reabrir como admin
+          </Button>
+        </div>
       )
     }
     return (
-      <Button size="sm" disabled={busy !== null} onClick={() => void run({ id: a.fix }, a.fix)}>
+      <Button size="sm" className={WRAP} disabled={busy !== null} onClick={() => void run({ id: a.fix }, a.fix)}>
         {busy === a.fix && <RiLoader4Line className="animate-spin" aria-hidden />}
         {a.label}
       </Button>
@@ -237,10 +246,13 @@ export default function Security() {
                       </p>
                     )}
                     {!isAdmin && facts.listening.some((a) => !a.system && a.path) && (
-                      <Button size="sm" variant="outline" className="self-start" onClick={() => void relaunch()}>
-                        <RiShieldUserLine aria-hidden />
-                        Reabrir como admin para bloquear
-                      </Button>
+                      <div className="flex flex-col items-start gap-1.5 pt-1">
+                        <span className="text-xs text-muted-foreground">Bloquear um programa no firewall pede o modo administrador.</span>
+                        <Button size="sm" variant="outline" className={WRAP} onClick={() => void relaunch()}>
+                          <RiShieldUserLine aria-hidden />
+                          Reabrir como admin
+                        </Button>
+                      </div>
                     )}
                   </div>
                 )}

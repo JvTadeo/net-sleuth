@@ -62,6 +62,9 @@ const TYPE_ICON: Record<DeviceType, RemixiconComponentType> = {
 const typeText = (d: Device): string =>
   d.type === 'unknown' ? 'Tipo desconhecido' : `${TYPE_LABEL[d.type]}${d.typeSource === 'auto' && d.typeConfidence !== 'high' ? ' (provável)' : ''}`
 
+/** Buttons in the narrow side panel may wrap to two lines instead of overflowing it. */
+const WRAP = 'h-auto min-h-8 max-w-full whitespace-normal py-1.5 text-left'
+
 const GRID = 'grid-cols-[minmax(180px,1.5fr)_minmax(96px,1fr)_104px_72px_92px]'
 
 function seen(d: Device, now: number): string {
@@ -434,7 +437,7 @@ export default function Devices() {
                 </div>
 
                 {actionable && step === 'none' && (
-                  <Button className="self-start" onClick={() => setStep('options')}>
+                  <Button className={cn('self-start', WRAP)} onClick={() => setStep('options')}>
                     O que fazer com este aparelho
                   </Button>
                 )}
@@ -473,11 +476,11 @@ export default function Devices() {
                       <li>Cole o endereço, salve, e volte aqui.</li>
                     </ol>
                     <div className="flex flex-wrap gap-2">
-                      <Button size="sm" variant="outline" onClick={openPanel}>
+                      <Button size="sm" variant="outline" className={WRAP} onClick={openPanel}>
                         <RiExternalLinkLine aria-hidden />
                         Abrir o painel
                       </Button>
-                      <Button size="sm" onClick={() => void act({ op: 'blocked' })}>
+                      <Button size="sm" className={WRAP} onClick={() => void act({ op: 'blocked' })}>
                         Já bloqueei no roteador
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => setStep('options')}>
@@ -497,11 +500,11 @@ export default function Devices() {
                       <li>Em Senhas e QR, adicione essa rede como "Convidados" para ter o QR das visitas.</li>
                     </ol>
                     <div className="flex flex-wrap gap-2">
-                      <Button size="sm" variant="outline" onClick={openPanel}>
+                      <Button size="sm" variant="outline" className={WRAP} onClick={openPanel}>
                         <RiExternalLinkLine aria-hidden />
                         Abrir o painel
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => setPage('passwords')}>
+                      <Button size="sm" variant="outline" className={WRAP} onClick={() => setPage('passwords')}>
                         Ir para Senhas e QR
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => setStep('options')}>
@@ -519,11 +522,11 @@ export default function Devices() {
                       <li>Depois, tire a marca aqui.</li>
                     </ol>
                     <div className="flex flex-wrap gap-2">
-                      <Button size="sm" variant="outline" onClick={openPanel}>
+                      <Button size="sm" variant="outline" className={WRAP} onClick={openPanel}>
                         <RiExternalLinkLine aria-hidden />
                         Abrir o painel
                       </Button>
-                      <Button size="sm" variant="outline" onClick={() => void act({ op: 'unblock' })}>
+                      <Button size="sm" variant="outline" className={WRAP} onClick={() => void act({ op: 'unblock' })}>
                         Tirar a marca de bloqueado
                       </Button>
                     </div>

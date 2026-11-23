@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1
+
+- **Segurança**: fixes that need administrator rights show the reason in a line and a short "Reabrir como admin"
+  button, so the side panel no longer overflows (it also caused a sideways scroll bar). Buttons in the side panels of
+  Segurança and Aparelhos wrap instead of overflowing.
+- **Development**: `npm run dev` shows the app's icon on the taskbar instead of Electron's.
+
 ## 1.0.0
 
 First release. Seven pages in the sidebar, interface in Brazilian Portuguese.

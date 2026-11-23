@@ -11,7 +11,8 @@ let cached: boolean | null = null
 export async function isAdmin(): Promise<boolean> {
   if (cached !== null) return cached
   if (process.platform !== 'win32') {
-    cached = process.getuid?.() === 0
+    // Linux test runs: root counts as admin unless the test asks to see the app as a normal user.
+    cached = process.getuid?.() === 0 && !process.env.NET_SLEUTH_NOT_ADMIN
     return cached
   }
   try {
